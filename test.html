@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Material Information System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-link {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .test-link:hover {
+            background: #0056b3;
+        }
+        .old-url {
+            background: #dc3545;
+        }
+        .new-url {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-card">
+        <h1>Material Information System - Test Page</h1>
+        <p>This page demonstrates the difference between the old and new URL formats.</p>
+        
+        <h2>Old URL Format (Complex)</h2>
+        <p>The old URL contained many parameters and was difficult to read:</p>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 12px; overflow-x: auto;">
+            https://picsap.zubbsteel.com/index.php?id=ACAC00032&pr=&po=&mat_group=ACAC&mat_des=LOCK%20NUT%20KM16&requis=&plant=&name1=&name2=&name3=&name4=&name5=&sname=&price1=%20%20%20%20%20%20%200.00000&price2=%20%20%20%20%20%20%200.00000&price3=%20%20%20%20%20%20%200.00000&price4=%20%20%20%20%20%20%200.00000&price5=%20%20%20%20%20%20%200.00000&finalprice=%20%20%20%20%20%20%20%20%20%200.00
+        </div>
+        
+        <h2>New URL Format (Simple)</h2>
+        <p>The new URL only requires the material ID:</p>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 14px;">
+            https://picsap.zubbsteel.com/index.php?id=ACAC00032
+        </div>
+        
+        <h2>Test Links</h2>
+        <p>Click the links below to test the system:</p>
+        
+        <a href="index.php?id=ACAC00032" class="test-link new-url">Test New Format (ACAC00032)</a>
+        <a href="index.php?id=ACAC00002" class="test-link new-url">Test New Format (ACAC00002)</a>
+        <a href="index.php?id=TEST123" class="test-link new-url">Test New Format (TEST123)</a>
+        
+        <h2>Features to Test</h2>
+        <ul>
+            <li><strong>Responsive Design:</strong> Try resizing your browser window</li>
+            <li><strong>Image Upload:</strong> Upload images to test the new functionality</li>
+            <li><strong>Lightbox Gallery:</strong> Click on images to view them in a lightbox</li>
+            <li><strong>Mobile View:</strong> Test on mobile devices or use browser dev tools</li>
+        </ul>
+        
+        <h2>Error Handling</h2>
+        <p>Test error handling by accessing without an ID:</p>
+        <a href="index.php" class="test-link old-url">Test Error Handling (No ID)</a>
+    </div>
+</body>
+</html> 
