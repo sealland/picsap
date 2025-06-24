@@ -1,0 +1,11 @@
+# Ignore sensitive and runtime files
+log_delete_image.txt
+material/*
+conn.php
+.env
+*.log
+# Ignore OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/ 

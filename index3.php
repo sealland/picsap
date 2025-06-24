@@ -74,21 +74,10 @@
         
         .upload-section {
             background: #e3f2fd;
-            border-radius: 10px;
-            padding: 6px 8px;
-            margin-bottom: 12px;
-            border: 1.5px dashed #2196F3;
-            font-size: 0.88rem;
-        }
-        
-        .upload-section h3 {
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-        
-        .upload-section .form-label,
-        .upload-section .form-text {
-            font-size: 0.88rem;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px dashed #2196F3;
         }
         
         .info-table {
@@ -119,23 +108,16 @@
         .btn-upload {
             background: linear-gradient(45deg, #2196F3, #21CBF3);
             border: none;
-            border-radius: 18px;
-            padding: 5px 12px;
+            border-radius: 25px;
+            padding: 12px 30px;
             color: white;
             font-weight: 600;
-            font-size: 0.95rem;
             transition: all 0.3s ease;
         }
         
         .btn-upload:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
-        }
-        
-        .upload-section input[type="file"] {
-            font-size: 0.88rem;
-            padding: 3px 0;
-            height: 28px;
         }
         
         .no-data {
@@ -181,14 +163,9 @@
 </head>
 <body>
     <?php
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
-    ?>
-
-    <?php
-    include "conn.php";
     // Get only the id parameter
-    $id = isset($_GET['id']) ? $_GET['id'] : '';
+    $id = $_GET['id'] ?? '';
+    
     if (empty($id)) {
         echo '<div class="container mt-5">
                 <div class="alert alert-danger" role="alert">
@@ -200,46 +177,43 @@
               </div>';
         exit;
     }
-
-    $sql = "SELECT * FROM vw_picsap WHERE MATNR = ?";
-    $params = array($id);
-    $stmt = sqlsrv_query($conn, $sql, $params);
-    if ($stmt === false) {
-        echo 'SQL ERROR: ';
-        die(print_r(sqlsrv_errors(), true));
-    }
-    $show = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-
-    // ถ้าไม่พบข้อมูล
-    if (!$show) {
-        echo '<div class="container mt-5">
-                <div class="alert alert-warning" role="alert">
-                    <h4 class="alert-heading">ไม่พบข้อมูล!</h4>
-                    <p>ไม่พบข้อมูลรหัสวัสดุนี้ในฐานข้อมูล</p>
-                </div>
-              </div>';
-        exit;
-    }
-
-    $material_data = array(
-        'id' => isset($show['MATNR']) ? $show['MATNR'] : '',
-        'name' => isset($show['MAKTX']) ? $show['MAKTX'] : '',
-        'group' => isset($show['MATNR']) ? substr($show['MATNR'],0,4) : '',
-        'size' => isset($show['EXTWG']) ? $show['EXTWG'] : '',
-        'requester' => (isset($show['MEINS']) && $show['MEINS'] === 'ST') ? 'PC' : (isset($show['MEINS']) ? $show['MEINS'] : ''),
-        'pr' => isset($show['PR']) ? $show['PR'] : '',
-        'po' => isset($show['PO']) ? $show['PO'] : '',
-        'plant' => isset($show['DEPARTMENT']) ? $show['DEPARTMENT'] : '',
-        'vendors' => array(
-            array('name' => isset($show['VENDOR_1']) ? $show['VENDOR_1'] : '', 'price' => isset($show['DETAIL_1']) ? $show['DETAIL_1'] : ''),
-            array('name' => isset($show['VENDOR_2']) ? $show['VENDOR_2'] : '', 'price' => isset($show['DETAIL_2']) ? $show['DETAIL_2'] : ''),
-            array('name' => isset($show['VENDOR_3']) ? $show['VENDOR_3'] : '', 'price' => isset($show['DETAIL_3']) ? $show['DETAIL_3'] : ''),
-            array('name' => isset($show['VENDOR_4']) ? $show['VENDOR_4'] : '', 'price' => isset($show['DETAIL_4']) ? $show['DETAIL_4'] : ''),
-            array('name' => isset($show['VENDOR_5']) ? $show['VENDOR_5'] : '', 'price' => isset($show['DETAIL_5']) ? $show['DETAIL_5'] : '')
-        ),
-        'selected_vendor' => isset($show['VENDOR_SELECT']) ? $show['VENDOR_SELECT'] : '',
-        'final_price' => isset($show['FINAL_PRICE']) ? $show['FINAL_PRICE'] : ''
-    );
+    
+    // Sample data - in a real application, this would come from a database
+    // For now, we'll use the URL parameters if they exist, otherwise show sample data
+    $material_data = [
+        'id' => $id,
+        'name' => $_GET['mat_des'] ?? 'LOCK NUT KM16',
+        'group' => $_GET['mat_group'] ?? 'ACAC',
+        'size' => $_GET['size'] ?? 'KM16',
+        'requester' => $_GET['requis'] ?? 'Engineering Department',
+        'pr' => $_GET['pr'] ?? 'PR-2024-001',
+        'po' => $_GET['po'] ?? 'PO-2024-001',
+        'plant' => $_GET['plant'] ?? 'Plant A',
+        'vendors' => [
+            [
+                'name' => $_GET['name1'] ?? 'Zubb Steel Co., Ltd.',
+                'price' => $_GET['price1'] ?? '฿1,250.00'
+            ],
+            [
+                'name' => $_GET['name2'] ?? 'Metal Supply Co.',
+                'price' => $_GET['price2'] ?? '฿1,300.00'
+            ],
+            [
+                'name' => $_GET['name3'] ?? 'Steel Solutions Ltd.',
+                'price' => $_GET['price3'] ?? '฿1,180.00'
+            ],
+            [
+                'name' => $_GET['name4'] ?? 'Industrial Parts Co.',
+                'price' => $_GET['price4'] ?? '฿1,350.00'
+            ],
+            [
+                'name' => $_GET['name5'] ?? 'Quality Steel Corp.',
+                'price' => $_GET['price5'] ?? '฿1,220.00'
+            ]
+        ],
+        'selected_vendor' => $_GET['sname'] ?? 'Zubb Steel Co., Ltd.',
+        'final_price' => $_GET['finalprice'] ?? '฿1,250.00'
+    ];
     ?>
 
     <div class="main-container">
@@ -266,17 +240,10 @@
                     } else {
                         foreach($images as $image) {
                             $filename = basename($image);
-                            echo '<div class="image-item text-center">
+                            echo '<div class="image-item">
                                     <a href="'.$image.'" data-lightbox="material-gallery" data-title="'.$filename.'">
                                         <img src="'.$image.'" alt="'.$filename.'" class="img-fluid">
                                     </a>
-                                    <form action="delete_image.php" method="POST" style="margin-top:8px;">
-                                        <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
-                                        <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
-                                        <button type="button" class="btn btn-danger btn-sm btn-delete-image">
-                                            <i class="fas fa-trash-alt"></i> ลบรูป
-                                        </button>
-                                    </form>
                                   </div>';
                         }
                     }
@@ -324,18 +291,57 @@
                             <td><?php echo htmlspecialchars($material_data['group']); ?></td>
                         </tr>
                         <tr>
-                            <th><i class="fas fa-ruler me-2"></i>Material Catalog</th>
+                            <th><i class="fas fa-ruler me-2"></i>Size</th>
                             <td><?php echo htmlspecialchars($material_data['size']); ?></td>
                         </tr>
                         <tr>
-                            <th><i class="fas fa-user me-2"></i>UOM</th>
+                            <th><i class="fas fa-user me-2"></i>Requester</th>
                             <td><?php echo htmlspecialchars($material_data['requester']); ?></td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-file-alt me-2"></i>PR Number</th>
+                            <td><?php echo htmlspecialchars($material_data['pr']); ?></td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-shopping-cart me-2"></i>PO Number</th>
+                            <td><?php echo htmlspecialchars($material_data['po']); ?></td>
+                        </tr>
+                        <tr>
+                            <th><i class="fas fa-industry me-2"></i>Plant</th>
+                            <td><?php echo htmlspecialchars($material_data['plant']); ?></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            
+            <!-- Vendor Information -->
+            <div class="info-table mt-4">
+                <h3 class="p-4 mb-0 border-bottom"><i class="fas fa-store me-2"></i>Vendor Comparison</h3>
+                <table class="table table-hover">
+                    <tbody>
+                        <?php foreach($material_data['vendors'] as $index => $vendor): ?>
+                        <tr>
+                            <th><i class="fas fa-building me-2"></i>Vendor <?php echo $index + 1; ?></th>
+                            <td>
+                                <div class="vendor-info">
+                                    <strong><?php echo htmlspecialchars($vendor['name']); ?></strong>
+                                    <span class="price-highlight float-end"><?php echo htmlspecialchars($vendor['price']); ?></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                        <tr class="table-success">
+                            <th><i class="fas fa-check-circle me-2"></i>Selected Vendor</th>
+                            <td>
+                                <div class="vendor-info">
+                                    <strong><?php echo htmlspecialchars($material_data['selected_vendor']); ?></strong>
+                                    <span class="price-highlight float-end"><?php echo htmlspecialchars($material_data['final_price']); ?></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- Footer -->
             <div class="text-center mt-4">
@@ -352,24 +358,6 @@
     <!-- Lightbox JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
     
-    <!-- Delete Image Modal -->
-    <div class="modal fade" id="deleteImageModal" tabindex="-1" aria-labelledby="deleteImageModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title" id="deleteImageModalLabel"><i class="fas fa-trash-alt me-2"></i>ยืนยันการลบรูปภาพ</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-            <p>คุณต้องการลบรูปภาพนี้ใช่หรือไม่?</p>
-          </div>
-          <div class="modal-footer justify-content-center">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">ยืนยันลบ</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <script>
         // Auto-refresh page after successful upload
         document.getElementById('uploadForm').addEventListener('submit', function(e) {
@@ -380,42 +368,12 @@
             submitBtn.disabled = true;
         });
 
-        // Initialize lightbox (ป้องกัน error ถ้า lightbox ไม่โหลด)
-        try {
-            if (typeof lightbox !== 'undefined') {
-                lightbox.option({
-                    'resizeDuration': 200,
-                    'wrapAround': true,
-                    'albumLabel': 'Image %1 of %2'
-                });
-            }
-        } catch (e) {
-            // lightbox error, do nothing
-        }
-
-        // Delete image modal logic (ทำงานได้แม้ lightbox error)
-        let formToDelete = null;
-        document.querySelectorAll('.btn-delete-image').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                formToDelete = btn.closest('form');
-                const modal = new bootstrap.Modal(document.getElementById('deleteImageModal'));
-                modal.show();
-            });
-        });
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-            if (formToDelete) {
-                formToDelete.submit();
-            }
+        // Initialize lightbox
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true,
+            'albumLabel': 'Image %1 of %2'
         });
     </script>
-
-    <!-- Show alert message if msg is set -->
-    <?php
-    if (isset($_GET['msg']) && $_GET['msg'] !== '') {
-        $msg = htmlspecialchars($_GET['msg']);
-        echo '<div class="container mt-3"><div class="alert alert-info text-center">'. $msg .'</div></div>';
-    }
-    ?>
 </body>
-</html> 
+</html>

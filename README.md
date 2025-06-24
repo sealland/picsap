@@ -3,93 +3,46 @@
 ## Overview
 This is a modernized version of the Material Information System with improved UI/UX and simplified parameter handling.
 
-## Key Changes Made
+## Getting Started (สำหรับ GitHub)
 
-### 1. Simplified URL Parameters
-- **Before**: Complex URL with many parameters
-  ```
-  https://picsap.zubbsteel.com/index.php?id=ACAC00032&pr=&po=&mat_group=ACAC&mat_des=LOCK%20NUT%20KM16&requis=&plant=&name1=&name2=&name3=&name4=&name5=&sname=&price1=%20%20%20%20%20%20%200.00000&price2=%20%20%20%20%20%20%200.00000&price3=%20%20%20%20%20%20%200.00000&price4=%20%20%20%20%20%20%200.00000&price5=%20%20%20%20%20%20%200.00000&finalprice=%20%20%20%20%20%20%20%20%20%200.00
-  ```
-- **After**: Simple URL with only the ID parameter
-  ```
-  https://picsap.zubbsteel.com/index.php?id=ACAC00032
-  ```
+### 1. Clone Project
+```bash
+git clone https://github.com/your-username/material-info-system.git
+cd material-info-system
+```
 
-### 2. Modern UI Design
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
-- **Modern Styling**: Gradient backgrounds, rounded corners, shadows, and animations
-- **Bootstrap 5**: Latest Bootstrap framework for consistent styling
-- **Font Awesome Icons**: Professional icons throughout the interface
-- **Lightbox Gallery**: Click on images to view them in a lightbox overlay
+### 2. Setup
+- ต้องใช้ PHP 7.4+ และ Web Server (IIS/Apache)
+- ตั้งค่าไฟล์ `conn.php` ให้เชื่อมต่อฐานข้อมูลของคุณ
+- ตรวจสอบ permission ของโฟลเดอร์ `material/` ให้ web server สามารถเขียน/ลบไฟล์ได้
 
-### 3. Image Upload Functionality
-- **Multiple File Upload**: Select and upload multiple images at once
-- **File Validation**: Supports JPG, PNG, and GIF formats
-- **Size Limits**: Maximum file size of 10MB per image
-- **Automatic Directory Creation**: Creates material-specific folders automatically
-- **Unique Filenames**: Prevents filename conflicts with timestamp-based naming
-
-### 4. Enhanced Features
-- **Material Information Display**: Clean, organized display of material details
-- **Vendor Comparison**: Visual comparison of vendor prices
-- **Error Handling**: Proper error messages and validation
-- **Loading States**: Visual feedback during uploads
-- **Mobile Responsive**: Optimized for all screen sizes
-
-## File Structure
+### 3. File Structure
 ```
 picsap/
 ├── index.php              # Main application file (modernized)
 ├── upload_handler.php     # Image upload processing
+├── delete_image.php       # Image delete handler (with logging)
 ├── material/              # Image storage directory
 │   └── [material_id]/     # Material-specific folders
-└── README.md              # This documentation
+├── log_delete_image.txt   # Log file for image deletion
+├── conn.php               # Database connection config
+├── README.md              # This documentation
 ```
 
-## Usage
+### 4. Usage
+- เปิดใช้งานผ่าน URL เช่น `index.php?id=ACAC00032`
+- อัปโหลด/ลบรูปภาพได้ทันที (มีระบบยืนยันและ log)
 
-### Basic Usage
-1. Access the system with a material ID:
-   ```
-   https://your-domain.com/index.php?id=ACAC00032
-   ```
+### 5. Security & Production Notes
+- ตรวจสอบสิทธิ์โฟลเดอร์ `material/` และ `log_delete_image.txt` ให้ปลอดภัย
+- ไม่ควร commit ข้อมูลสำคัญ เช่น รหัสผ่านใน `conn.php` หรือ log จริงขึ้น GitHub (เพิ่มใน `.gitignore`)
+- สามารถเพิ่ม `.env` หรือ config แยกสำหรับ production ได้
 
-2. View material information and existing images
-
-3. Upload new images using the upload form
-
-### Image Upload
-1. Click "Choose Files" in the upload section
-2. Select one or more images (JPG, PNG, GIF)
-3. Click "Upload Images"
-4. Images will be saved to `material/[material_id]/` directory
-
-## Technical Details
-
-### Dependencies
-- **Bootstrap 5.3.0**: CSS framework
-- **Font Awesome 6.4.0**: Icon library
-- **Lightbox 2.11.4**: Image gallery
-- **PHP 7.4+**: Server-side processing
-
-### Security Features
-- File type validation
-- File size limits
-- Directory traversal protection
-- Input sanitization
-- Material ID validation
-
-### Browser Support
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-## Migration Notes
-- The system maintains backward compatibility with existing URL parameters
-- Old URLs will still work but will only use the `id` parameter
-- Existing images in the `material/` directory will continue to work
-- No database changes required
+## Key Features
+- Modern UI (Bootstrap 5, Font Awesome, Lightbox)
+- Upload & Delete images (with confirmation and logging)
+- Responsive design
+- Security: file validation, input sanitization, directory traversal protection
 
 ## Support
 หากมีข้อผิดพลาดหรือข้อสงสัย กรุณาติดต่อแผนกไอที 
