@@ -1,0 +1,2 @@
+[2025-06-24 16:36:40] material_id=SEAL010016, filename=685a7193f00fd_1750757779.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-06-24 16:37:00] material_id=SEAL010016, filename=685a4e627f956_1750748770.jpg, computer_name=WEBSERVER2019, ip=192.168.140.46, result=SUCCESS
