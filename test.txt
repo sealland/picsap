@@ -1,0 +1,1 @@
+Test commit file for git status and commit demonstration. 
