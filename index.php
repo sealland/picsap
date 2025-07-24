@@ -256,28 +256,47 @@
                 <div class="text-center">
                     <?php
                     $dirname = "material/$id/";
-                    $images = glob($dirname."*.{JPG,jpg,jpeg,png,gif}", GLOB_BRACE);
+                    $images = glob($dirname."*.{JPG,jpg,jpeg,png,gif,pdf}", GLOB_BRACE);
                     
                     if (empty($images)) {
                         echo '<div class="alert alert-info">
                                 <i class="fas fa-info-circle me-2"></i>
                                 No images available for this material. Please upload images below.
-                              </div>';
+                            </div>';
                     } else {
                         foreach($images as $image) {
                             $filename = basename($image);
-                            echo '<div class="image-item text-center">
+                            $file_extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                            echo '<div class="image-item text-center">';
+                            if ($file_extension === 'pdf') {
+                                // แสดงไอคอน PDF และปุ่มดาวน์โหลด
+                                echo '
+                                    <a href="'.$image.'" download class="d-block mb-2" style="font-size:3em;color:#e53935;">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </a>
+                                    <div class="mb-2" style="font-size:0.95em;">'.$filename.'</div>
+                                    <a href="'.$image.'" download class="btn btn-outline-danger btn-sm mb-2">
+                                        <i class="fas fa-download"></i> ดาวน์โหลด PDF
+                                    </a>
+                                ';
+                            } else {
+                                // แสดงรูปภาพปกติ
+                                echo '
                                     <a href="'.$image.'" data-lightbox="material-gallery" data-title="'.$filename.'">
                                         <img src="'.$image.'" alt="'.$filename.'" class="img-fluid">
                                     </a>
-                                    <form action="delete_image.php" method="POST" style="margin-top:8px;">
-                                        <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
-                                        <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
-                                        <button type="button" class="btn btn-danger btn-sm btn-delete-image">
-                                            <i class="fas fa-trash-alt"></i> ลบรูป
-                                        </button>
-                                    </form>
-                                  </div>';
+                                ';
+                            }
+                            // ปุ่มลบ (เหมือนเดิม)
+                            echo '
+                                <form action="delete_image.php" method="POST" style="margin-top:8px;">
+                                    <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
+                                    <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
+                                    <button type="button" class="btn btn-danger btn-sm btn-delete-image">
+                                        <i class="fas fa-trash-alt"></i> ลบรูป
+                                    </button>
+                                </form>
+                            </div>';
                         }
                     }
                     ?>
@@ -294,12 +313,12 @@
                             <div class="mb-3">
                                 <label for="images" class="form-label">Select Images</label>
                                 <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*" required>
-                                <div class="form-text">You can select multiple images. Supported formats: JPG, PNG, GIF</div>
+                                <div class="form-text">คุณสามารถเลือกอัพโหลดได้ครั้งละหลายไฟล์แต่ต้องไม่เกิน 10MB/File. Supported formats: JPG, PNG, GIF ,PDF</div>
                             </div>
                         </div>
                         <div class="col-md-4 d-flex align-items-end">
                             <button type="submit" class="btn btn-upload w-100">
-                                <i class="fas fa-upload me-2"></i>Upload Images
+                                <i class="fas fa-upload me-2"></i>Upload File
                             </button>
                         </div>
                     </div>
