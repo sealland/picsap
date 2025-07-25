@@ -286,14 +286,21 @@
                                     <a href="'.$image.'" data-lightbox="material-gallery" data-title="'.$filename.'">
                                         <img src="'.$image.'" alt="'.$filename.'" class="img-fluid">
                                     </a>
-                                    <form action="delete_image.php" method="POST" style="margin-top:8px;">
-                                        <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
-                                        <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
-                                        <button type="button" class="btn btn-danger btn-sm btn-delete-image">
-                                            <i class="fas fa-trash-alt"></i> ลบรูป
-                                        </button>
-                                    </form>
-                                  </div>';
+                                ';
+                            }
+                            // ปุ่มลบ (เหมือนเดิม)
+                                if ($showDeleteBtn) {
+                                    echo '
+                                        <form action="delete_image.php" method="POST" style="margin-top:8px;">
+                                            <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
+                                            <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
+                                            <button type="button" class="btn btn-danger btn-sm btn-delete-image">
+                                                <i class="fas fa-trash-alt"></i> ลบรูป
+                                            </button>
+                                        </form>
+                                    ';
+                                }
+                                echo '</div>';
                         }
                     }
                     ?>
