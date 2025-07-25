@@ -1,2 +1,30 @@
 [2025-06-24 16:36:40] material_id=SEAL010016, filename=685a7193f00fd_1750757779.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
 [2025-06-24 16:37:00] material_id=SEAL010016, filename=685a4e627f956_1750748770.jpg, computer_name=WEBSERVER2019, ip=192.168.140.46, result=SUCCESS
+[2025-06-25 16:11:07] material_id=ITHW00009, filename=685bbd206f6f0_1750842656.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:35:58] material_id=ITHW00009, filename=685bc2f57f569_1750844149.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:36:02] material_id=ITHW00009, filename=685bc2f57e23f_1750844149.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:24] material_id=ITHW00009, filename=685bc38957fbd_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:27] material_id=ITHW00009, filename=685bc3895730b_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:31] material_id=ITHW00009, filename=685bc38956858_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:38] material_id=ITHW00009, filename=685bc38955d03_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:41] material_id=ITHW00009, filename=685bc38955137_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:45] material_id=ITHW00009, filename=685bc389540f5_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:48] material_id=ITHW00009, filename=685bc38952e26_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:51] material_id=ITHW00009, filename=685bc38952249_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:55] material_id=ITHW00009, filename=685bc38951696_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-25 16:38:58] material_id=ITHW00009, filename=685bc38950ae6_1750844297.jpg, computer_name=WEBSERVER2019, ip=192.168.99.24, result=SUCCESS
+[2025-06-27 13:22:12] material_id=CUDR000392, filename=TOCD00900.jpg, computer_name=WEBSERVER2019, ip=192.168.70.59, result=SUCCESS
+[2025-07-24 09:38:33] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-07-24 09:38:35] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:36] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:38] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:38] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:38] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:39] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:39] material_id=SEAL010016, filename=68819c0982b2c_1753324553.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 09:38:41] material_id=SEAL010016, filename=688199c837e4f_1753323976.pdf, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-07-24 16:36:22] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-07-24 16:36:26] material_id=CUDR000419, filename=TOCD80071-1.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-07-24 16:36:32] material_id=CUDR000419, filename=DSCF4887.JPG, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-07-24 16:36:55] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-07-24 16:37:06] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ

@@ -55,14 +55,21 @@ foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
     }
     
     // Validate file type
-    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif','application/pdf'];
     $file_type = mime_content_type($tmp_name);
     
     if (!in_array($file_type, $allowed_types)) {
-        $errors[] = "Invalid file type for $file_name. Allowed types: JPG, PNG, GIF";
+        $errors[] = "Invalid file type for $file_name. Allowed types: JPG, PNG, GIF ,PDF";
         continue;
     }
     
+    // Validate file extension (ป้องกัน spoof)
+    $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
+    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+    if (!in_array($file_extension, $allowed_extensions)) {
+        $errors[] = "Invalid file extension for $file_name. Allowed extensions: JPG, PNG, GIF, PDF";
+        continue;
+    }
     // Validate file size (max 10MB)
     $max_size = 10 * 1024 * 1024; // 10MB
     if ($file_size > $max_size) {
