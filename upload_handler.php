@@ -104,16 +104,81 @@ if (count($uploaded_files) > 0) {
           </script>";
     exit;
 } else {
-    // Error
-    echo "<div style='padding:2em;text-align:center;'>
-            <h2 style='color:red;'>เกิดข้อผิดพลาดในการอัปโหลด</h2>
-            <ul style='color:#c00;'>";
+    // Error display with improved styling
+    echo "<div style='max-width:500px; margin:2em auto; padding:2em; border:1px solid #f5c2c7; background:#fff0f3; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(220,53,69,0.08);'>
+            <h2 style='color:#dc3545; margin-bottom:1em;'><span style='font-size:1.5em;'>&#9888;</span> อัปโหลดไม่สำเร็จ</h2>
+            <ul style='color:#b02a37; text-align:left; display:inline-block; margin-bottom:1em;'>";
     foreach ($errors as $err) {
         echo "<li>" . htmlspecialchars($err) . "</li>";
     }
     echo "</ul>
-          <a href='index.php?id=" . htmlspecialchars($material_id) . "'>กลับ</a>
+          <a href='index.php?id=" . htmlspecialchars($material_id) . "' style='display:inline-block; margin-top:1em; padding:0.5em 1.5em; background:#dc3545; color:#fff; border-radius:5px; text-decoration:none; font-weight:bold; transition:background 0.2s;'>กลับ</a>
           </div>";
-    exit;
+
+    // PDF-specific error note
+    if (!empty($errors)) {
+        foreach ($errors as $err) {
+            if (
+                (strpos($err, 'Invalid file type') !== false && strpos(strtolower($err), 'pdf') !== false) ||
+                (strpos($err, 'Invalid file extension') !== false && strpos(strtolower($err), 'pdf') !== false)
+            ) {
+                echo "<div style='max-width:500px; margin:1em auto; padding:1em 2em; background:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:8px; font-size:0.97em;'>
+                    <strong>หมายเหตุ:</strong> หากไฟล์ PDF ของคุณไม่สามารถอัปโหลดได้ อาจเกิดจากสาเหตุต่อไปนี้:
+                    <ul style='margin:0.5em 0 0 1.5em; color:#856404; text-align:left;'>
+                        <li>ไฟล์ PDF ถูกสร้างด้วยวิธีที่ไม่รองรับ หรือมีโครงสร้างไฟล์ผิดปกติ</li>
+                        <li>ไฟล์ PDF มีการเข้ารหัสหรือป้องกันรหัสผ่าน</li>
+                        <li>ไฟล์ PDF มีขนาดใหญ่เกิน 10MB</li>
+                        <li>ไฟล์ PDF มีนามสกุลไม่ถูกต้อง หรือมีการเปลี่ยนชื่อไฟล์โดยไม่ถูกต้อง</li>
+                        <li>เบราว์เซอร์หรืออุปกรณ์ที่ใช้งานไม่รองรับการอัปโหลดไฟล์ PDF บางประเภท</li>
+                    </ul>
+                    หากยังพบปัญหา กรุณาตรวจสอบไฟล์ PDF หรือแจ้งผู้ดูแลระบบ
+                </div>";
+                break;
+            }
+        }
+    }
+
+    // Show PHP upload error details for debugging (optional, can be commented out in production)
+    foreach ($_FILES['images']['error'] as $key => $error_code) {
+        if ($error_code !== UPLOAD_ERR_OK) {
+            $file_name = $_FILES['images']['name'][$key];
+            switch ($error_code) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $error_message = "ไฟล์ $file_name มีขนาดใหญ่เกินกำหนด (10MB)";
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $error_message = "ไฟล์ $file_name ถูกอัปโหลดเพียงบางส่วน";
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $error_message = "ไม่ได้เลือกไฟล์สำหรับ $file_name";
+                    break;
+                case UPLOAD_ERR_NO_TMP_DIR:
+                    $error_message = "ไม่มีโฟลเดอร์ชั่วคราวสำหรับ $file_name";
+                    break;
+                case UPLOAD_ERR_CANT_WRITE:
+                    $error_message = "ไม่สามารถบันทึก $file_name ลงดิสก์ได้";
+                    break;
+                case UPLOAD_ERR_EXTENSION:
+                    $error_message = "PHP extension หยุดการอัปโหลดไฟล์ $file_name";
+                    break;
+                default:
+                    $error_message = "เกิดข้อผิดพลาดไม่ทราบสาเหตุสำหรับ $file_name (code $error_code)";
+            }
+            echo "<div style='max-width:500px; margin:1em auto; padding:0.7em 1.5em; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:7px; font-size:0.97em;'>$error_message</div>";
+        }
+    }
+    // Debugging: Show actual file size and PHP limits
+    // $max_upload = ini_get('upload_max_filesize');
+    // $max_post = ini_get('post_max_size');
+    // $memory_limit = ini_get('memory_limit');
+    // echo "<div style='color:#888; margin-top:1em; font-size:0.95em;'>
+    //         <strong>Debug info:</strong><br>
+    //         Actual file size: " . number_format($file_size) . " bytes<br>
+    //         upload_max_filesize: $max_upload<br>
+    //         post_max_size: $max_post<br>
+    //         memory_limit: $memory_limit
+    //       </div>";
+    // exit;
 }
 ?> 

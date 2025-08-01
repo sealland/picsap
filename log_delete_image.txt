@@ -28,3 +28,5 @@
 [2025-07-24 16:36:32] material_id=CUDR000419, filename=DSCF4887.JPG, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
 [2025-07-24 16:36:55] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
 [2025-07-24 16:37:06] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
+[2025-08-01 11:12:52] material_id=ACRM000855, filename=688ae3cfe846f_1753932751.pdf, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-08-01 11:27:02] material_id=ACRM000855, filename=688c4205c0e5b_1754022405.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
