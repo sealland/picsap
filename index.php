@@ -187,6 +187,46 @@
 
     <?php
     include "conn.php";
+
+    // ถ้ายังไม่มี id ให้แสดงฟอร์มค้นหา
+    if (!isset($_GET['id']) || $_GET['id'] === '') {
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        echo '<div class="container mt-5">';
+        echo '<div class="card p-4">';
+        echo '<h3 class="mb-3"><i class="fas fa-search me-2"></i>ค้นหา Material</h3>';
+        echo '<form method="GET" action="index.php" class="d-flex mb-3">';
+        echo '<input type="text" name="search" class="form-control me-2" placeholder="ชื่อหรือรหัสวัสดุ" value="'.htmlspecialchars($search).'">';
+        echo '<button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>';
+        echo '</form>';
+
+        if ($search !== '') {
+            $sql = "SELECT TOP 20 MATNR, MAKTX FROM vw_picsap WHERE MATNR LIKE ? OR MAKTX LIKE ?";
+            $params = array('%'.$search.'%', '%'.$search.'%');
+            $stmt = sqlsrv_query($conn, $sql, $params);
+            if ($stmt === false) {
+                echo '<div class="alert alert-danger">เกิดข้อผิดพลาดในการค้นหา</div>';
+            } else {
+                echo '<ul class="list-group">';
+                $found = false;
+                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                    $found = true;
+                    echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    echo htmlspecialchars($row['MATNR']).' - '.htmlspecialchars($row['MAKTX']);
+                    echo '<a href="index.php?id='.urlencode($row['MATNR']).'&draft=" class="btn btn-sm btn-success">ดูรายละเอียด</a>';
+                    echo '</li>';
+                }
+                if (!$found) {
+                    echo '<li class="list-group-item text-danger">ไม่พบข้อมูลวัสดุที่ค้นหา</li>';
+                }
+                echo '</ul>';
+                sqlsrv_free_stmt($stmt);
+            }
+        }
+        echo '</div></div>';
+        sqlsrv_close($conn);
+        exit;
+    }
+
     // Get only the id parameter
     $id = isset($_GET['id']) ? $_GET['id'] : '';
     if (empty($id)) {
@@ -358,7 +398,43 @@
                 </table>
             </div>
 
-            
+            <!-- Search Section -->
+            <div class="search-section mb-4">
+                <form method="GET" action="index.php" class="d-flex">
+                    <input type="text" name="search" placeholder="ค้นหา material" class="form-control me-2" aria-label="Search">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> ค้นหา
+                    </button>
+                </form>
+            </div>
+
+            <!-- Search Results -->
+            <div class="search-results">
+                <?php
+                // เช็คว่ามีการค้นหาหรือไม่
+                $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+                // ตัวอย่างการดึงข้อมูล material จากฐานข้อมูล
+                // สมมติใช้ MySQL และมีตารางชื่อ material
+                $conn = new mysqli('localhost', 'username', 'password', 'database');
+                $sql = "SELECT * FROM material";
+                if ($search != '') {
+                    $sql .= " WHERE name LIKE '%" . $conn->real_escape_string($search) . "%'";
+                }
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    echo "<ul class='list-group'>";
+                    while($row = $result->fetch_assoc()) {
+                        echo "<li class='list-group-item'>" . htmlspecialchars($row['name']) . "</li>";
+                    }
+                    echo "</ul>";
+                } else {
+                    echo "<div class='alert alert-warning' role='alert'>ไม่พบ material</div>";
+                }
+                $conn->close();
+                ?>
+            </div>
 
             <!-- Footer -->
             <div class="text-center mt-4">
@@ -440,5 +516,45 @@
         echo '<div class="container mt-3"><div class="alert alert-info text-center">'. $msg .'</div></div>';
     }
     ?>
+
+    <?php
+    include 'conn.php';
+
+    // รับ parameter id หรือ search
+    $id = isset($_GET['id']) ? $_GET['id'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    // สร้าง query สำหรับค้นหา
+    $sql = "SELECT * FROM material";
+    $params = array();
+
+    if ($id != '') {
+        $sql .= " WHERE id = ?";
+        $params[] = $id;
+    } elseif ($search != '') {
+        $sql .= " WHERE name LIKE ?";
+        $params[] = '%' . $search . '%';
+    }
+
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    echo '<form method="GET" action="index.php">
+            <input type="text" name="search" placeholder="ค้นหา material" value="' . htmlspecialchars($search) . '">
+            <button type="submit">ค้นหา</button>
+          </form>';
+
+    echo "<ul>";
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        echo "<li>" . htmlspecialchars($row['name']) . "</li>";
+    }
+    echo "</ul>";
+
+    sqlsrv_free_stmt($stmt);
+    sqlsrv_close($conn);
+    ?>
 </body>
-</html> 
+</html>
