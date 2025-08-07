@@ -30,3 +30,14 @@
 [2025-07-24 16:37:06] material_id=CUDR000419, filename=TOCD80071-2.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=FAIL: ไม่พบไฟล์ที่ต้องการลบ
 [2025-08-01 11:12:52] material_id=ACRM000855, filename=688ae3cfe846f_1753932751.pdf, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
 [2025-08-01 11:27:02] material_id=ACRM000855, filename=688c4205c0e5b_1754022405.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-01 16:43:55] material_id=ACRM000916, filename=688aea70180ea_1753934448.pdf, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-08-04 15:16:19] material_id=CUDR000404, filename=TOCD80005-1.jpg, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-08-04 15:16:51] material_id=CUDR000404, filename=DSCF4905.JPG, computer_name=WEBSERVER2019, ip=192.168.70.18, result=SUCCESS
+[2025-08-07 17:03:16] material_id=CUDR000363, filename=689478345367d_1754560564.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:11:16] material_id=CUDR000363, filename=68947bb46e797_1754561460.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:12:11] material_id=CUDR000363, filename=68947bd875693_1754561496.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:14:40] material_id=CUDR000363, filename=68947c83a27e9_1754561667.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:18:30] material_id=CUDR000363, filename=68947d667b737_1754561894.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:19:01] material_id=CUDR000363, filename=68947d817b449_1754561921.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:23:57] material_id=CUDR000363, filename=68947dabd7a9c_1754561963.png, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS
+[2025-08-07 17:24:02] material_id=CUDR000363, filename=68947de512d04_1754562021.jpg, computer_name=WEBSERVER2019, ip=192.168.140.36, result=SUCCESS

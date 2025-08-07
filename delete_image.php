@@ -39,16 +39,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $log_msg .= "FAIL: $error\n";
     }
     file_put_contents($logfile, $log_msg, FILE_APPEND | LOCK_EX);
-    // Redirect back with message (debug info included)
+
+    // ---- ส่วนที่แก้ไข ----
+    // สร้าง URL พื้นฐานสำหรับ redirect
     $redirect_url = 'index.php?id=' . urlencode($material_id);
+
+    // ตรวจสอบว่ามีการส่งค่า 'draft' มาด้วยหรือไม่ (จากการเพิ่ม input ใน index.html)
+    if (isset($_POST['draft'])) {
+        // ถ้ามี ให้ต่อพารามิเตอร์ &draft= เข้าไปใน URL
+        $redirect_url .= '&draft=';
+    }
+
+    // เพิ่มข้อความสถานะ (success/error)
     if ($error) {
-        $redirect_url .= '&msg=' . urlencode($error.$debug);
+        $redirect_url .= '&msg=' . urlencode($error . $debug);
     } elseif ($success) {
         $redirect_url .= '&msg=' . urlencode($success);
     }
+
+    // สั่ง redirect ไปยัง URL ที่สร้างขึ้น
     header('Location: ' . $redirect_url);
     exit;
+    // ---- จบส่วนที่แก้ไข ----
+
 } else {
     header('Location: index.php');
     exit;
-} 
+}
+?>

@@ -187,6 +187,46 @@
 
     <?php
     include "conn.php";
+
+    // ถ้ายังไม่มี id ให้แสดงฟอร์มค้นหา
+    if (!isset($_GET['id']) || $_GET['id'] === '') {
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        echo '<div class="container mt-5">';
+        echo '<div class="card p-4">';
+        echo '<h3 class="mb-3"><i class="fas fa-search me-2"></i>ค้นหา Material</h3>';
+        echo '<form method="GET" action="index.php" class="d-flex mb-3">';
+        echo '<input type="text" name="search" class="form-control me-2" placeholder="ชื่อหรือรหัสวัสดุ" value="'.htmlspecialchars($search).'">';
+        echo '<button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> ค้นหา</button>';
+        echo '</form>';
+
+        if ($search !== '') {
+            $sql = "SELECT TOP 20 MATNR, MAKTX FROM vw_picsap WHERE MATNR LIKE ? OR MAKTX LIKE ?";
+            $params = array('%'.$search.'%', '%'.$search.'%');
+            $stmt = sqlsrv_query($conn, $sql, $params);
+            if ($stmt === false) {
+                echo '<div class="alert alert-danger">เกิดข้อผิดพลาดในการค้นหา</div>';
+            } else {
+                echo '<ul class="list-group">';
+                $found = false;
+                while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+                    $found = true;
+                    echo '<li class="list-group-item d-flex justify-content-between align-items-center">';
+                    echo htmlspecialchars($row['MATNR']).' - '.htmlspecialchars($row['MAKTX']);
+                    echo '<a href="index.php?id='.urlencode($row['MATNR']).'&draft=" class="btn btn-sm btn-success">ดูรายละเอียด</a>';
+                    echo '</li>';
+                }
+                if (!$found) {
+                    echo '<li class="list-group-item text-danger">ไม่พบข้อมูลวัสดุที่ค้นหา</li>';
+                }
+                echo '</ul>';
+                sqlsrv_free_stmt($stmt);
+            }
+        }
+        echo '</div></div>';
+        sqlsrv_close($conn);
+        exit;
+    }
+
     // Get only the id parameter
     $id = isset($_GET['id']) ? $_GET['id'] : '';
     if (empty($id)) {
@@ -289,11 +329,12 @@
                                 ';
                             }
                             // ปุ่มลบ (เหมือนเดิม)
-                                if ($showDeleteBtn) {
-                                    echo '
+                                if ($showDeleteBtn) {echo '
                                         <form action="delete_image.php" method="POST" style="margin-top:8px;">
                                             <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
                                             <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
+                                            <!-- แก้ไขบรรทัดนี้ ให้มี value ที่ไม่ว่างเปล่า -->
+                                            <input type="hidden" name="draft" value="true">
                                             <button type="button" class="btn btn-danger btn-sm btn-delete-image">
                                                 <i class="fas fa-trash-alt"></i> ลบรูป
                                             </button>
@@ -308,26 +349,28 @@
             </div>
 
             <!-- Upload Section -->
-            <div class="upload-section">
-                <h3 class="mb-4"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Images</h3>
-                <form action="upload_handler.php" method="post" enctype="multipart/form-data" id="uploadForm">
-                    <input type="hidden" name="material_id" value="<?php echo htmlspecialchars($id); ?>">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="images" class="form-label">Select Images</label>
-                                <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*" required>
-                                <div class="form-text">คุณสามารถเลือกอัพโหลดได้ครั้งละหลายไฟล์แต่ต้องไม่เกิน 10MB/File. Supported formats: JPG, PNG, GIF ,PDF</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button type="submit" class="btn btn-upload w-100">
-                                <i class="fas fa-upload me-2"></i>Upload File
-                            </button>
+           <div class="upload-section">
+            <h3 class="mb-4"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Images</h3>
+            <form action="upload_handler.php" method="post" enctype="multipart/form-data" id="uploadForm">
+                <input type="hidden" name="material_id" value="<?php echo htmlspecialchars($id); ?>">
+                <!-- เพิ่มบรรทัดนี้เข้ามา -->
+                <input type="hidden" name="draft" value="true">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label for="images" class="form-label">Select Images</label>
+                            <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*,application/pdf" required>
+                            <div class="form-text">คุณสามารถเลือกอัพโหลดได้ครั้งละหลายไฟล์แต่ต้องไม่เกิน 10MB/File. Supported formats: JPG, PNG, GIF, PDF</div>
                         </div>
                     </div>
-                </form>
-            </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-upload w-100">
+                            <i class="fas fa-upload me-2"></i>Upload File
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
 
             <!-- Material Information -->
             <div class="info-table">
@@ -358,7 +401,8 @@
                 </table>
             </div>
 
-            
+            <!-- Search Section -->
+            <!-- (Removed duplicate MySQLi search/results section. Use only the top search form and SQLSRV logic.) -->
 
             <!-- Footer -->
             <div class="text-center mt-4">
@@ -440,5 +484,6 @@
         echo '<div class="container mt-3"><div class="alert alert-info text-center">'. $msg .'</div></div>';
     }
     ?>
+
 </body>
-</html> 
+</html>

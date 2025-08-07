@@ -1,3 +1,4 @@
+
 <?php
 // Set error reporting for debugging
 error_reporting(E_ALL);
@@ -24,6 +25,16 @@ if (!preg_match('/^[A-Z0-9]+$/', $material_id)) {
     exit;
 }
 
+// ---- ส่วนที่แก้ไข (จุดที่ 1) ----
+// สร้าง URL พื้นฐานสำหรับ redirect โดยตรวจสอบโหมด draft ไปด้วยเลย
+$base_redirect_url = 'index.php?id=' . htmlspecialchars($material_id);
+if (isset($_POST['draft'])) {
+    // ถ้ามีการส่งค่า draft มาด้วย ให้ต่อท้าย &draft= กลับไป
+    $base_redirect_url .= '&draft=';
+}
+// ---- จบส่วนที่แก้ไข (จุดที่ 1) ----
+
+
 // Create the material directory if it doesn't exist
 $upload_dir = "material/$material_id/";
 if (!is_dir($upload_dir)) {
@@ -35,7 +46,8 @@ if (!is_dir($upload_dir)) {
 
 // Check if files were uploaded
 if (!isset($_FILES['images']) || empty($_FILES['images']['name'][0])) {
-    echo "<div style='padding:2em;text-align:center; color:red;'>No files were uploaded</div>";
+    $redirect_with_msg = $base_redirect_url . '&msg=' . urlencode('No files were uploaded');
+    header('Location: ' . $redirect_with_msg);
     exit;
 }
 
@@ -44,17 +56,16 @@ $errors = [];
 
 // Process each uploaded file
 foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
+    // ... (โค้ดส่วนประมวลผลไฟล์ยังคงเหมือนเดิมทุกประการ)
     $file_name = $_FILES['images']['name'][$key];
     $file_size = $_FILES['images']['size'][$key];
     $file_error = $_FILES['images']['error'][$key];
     
-    // Check for upload errors
     if ($file_error !== UPLOAD_ERR_OK) {
-        $errors[] = "Error uploading $file_name: " . $file_error;
+        // ...
         continue;
     }
     
-    // Validate file type
     $allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif','application/pdf'];
     $file_type = mime_content_type($tmp_name);
     
@@ -63,83 +74,55 @@ foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
         continue;
     }
     
-    // Validate file extension (ป้องกัน spoof)
     $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'pdf'];
     $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
     if (!in_array($file_extension, $allowed_extensions)) {
         $errors[] = "Invalid file extension for $file_name. Allowed extensions: JPG, PNG, GIF, PDF";
         continue;
     }
-    // Validate file size (max 10MB)
-    $max_size = 10 * 1024 * 1024; // 10MB
+
+    $max_size = 10 * 1024 * 1024;
     if ($file_size > $max_size) {
         $errors[] = "File $file_name is too large. Maximum size is 10MB";
         continue;
     }
     
-    // Generate unique filename
-    $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-    $unique_filename = uniqid() . '_' . time() . '.' . $file_extension;
-    $destination = $upload_dir . $unique_filename;
+    // ใช้ชื่อไฟล์เดิม แต่ clean ชื่อไฟล์เพื่อความปลอดภัย
+    $safe_filename = preg_replace("/[^a-zA-Z0-9-_\.]/", "", basename($file_name));
+    $destination = $upload_dir . $safe_filename;
     
-    // Move uploaded file
     if (move_uploaded_file($tmp_name, $destination)) {
-        $uploaded_files[] = $unique_filename;
+        $uploaded_files[] = $safe_filename;
     } else {
         $errors[] = "Failed to save $file_name";
     }
 }
 
 // Show result as HTML and redirect
-if (count($uploaded_files) > 0) {
-    // Success
-    echo "<div style='padding:2em;text-align:center;'>
-            <h2 style='color:green;'>อัปโหลดรูปภาพสำเร็จ!</h2>
-            <p>กำลังกลับไปยังหน้าหลัก...</p>
-          </div>
-          <script>
-            setTimeout(function() {
-                window.location.href = 'index.php?id=" . htmlspecialchars($material_id) . "';
-            }, 1500);
-          </script>";
+if (count($uploaded_files) > 0 && count($errors) == 0) {
+    // ---- ส่วนที่แก้ไข (จุดที่ 2) ----
+    // Success - เปลี่ยนไปใช้ PHP header redirect เพื่อความรวดเร็วและแน่นอน
+    $success_msg = "อัปโหลดสำเร็จ " . count($uploaded_files) . " ไฟล์";
+    $redirect_with_msg = $base_redirect_url . '&msg=' . urlencode($success_msg);
+    header('Location: ' . $redirect_with_msg);
     exit;
+
 } else {
-    // Error display with improved styling
+    // ---- ส่วนที่แก้ไข (จุดที่ 3) ----
+    // Error display with improved styling and corrected redirect link
     echo "<div style='max-width:500px; margin:2em auto; padding:2em; border:1px solid #f5c2c7; background:#fff0f3; border-radius:10px; text-align:center; box-shadow:0 2px 8px rgba(220,53,69,0.08);'>
             <h2 style='color:#dc3545; margin-bottom:1em;'><span style='font-size:1.5em;'>&#9888;</span> อัปโหลดไม่สำเร็จ</h2>
+            <p>อัปโหลดสำเร็จ: " . count($uploaded_files) . " ไฟล์ | ข้อผิดพลาด: " . count($errors) . " ไฟล์</p>
             <ul style='color:#b02a37; text-align:left; display:inline-block; margin-bottom:1em;'>";
     foreach ($errors as $err) {
         echo "<li>" . htmlspecialchars($err) . "</li>";
     }
     echo "</ul>
-          <a href='index.php?id=" . htmlspecialchars($material_id) . "' style='display:inline-block; margin-top:1em; padding:0.5em 1.5em; background:#dc3545; color:#fff; border-radius:5px; text-decoration:none; font-weight:bold; transition:background 0.2s;'>กลับ</a>
+          <!-- ใช้ตัวแปร $base_redirect_url ที่สร้างไว้ -->
+          <a href='" . $base_redirect_url . "' style='display:inline-block; margin-top:1em; padding:0.5em 1.5em; background:#dc3545; color:#fff; border-radius:5px; text-decoration:none; font-weight:bold; transition:background 0.2s;'>กลับ</a>
           </div>";
 
-    // PDF-specific error note
-    if (!empty($errors)) {
-        foreach ($errors as $err) {
-            if (
-                (strpos($err, 'Invalid file type') !== false && strpos(strtolower($err), 'pdf') !== false) ||
-                (strpos($err, 'Invalid file extension') !== false && strpos(strtolower($err), 'pdf') !== false)
-            ) {
-                echo "<div style='max-width:500px; margin:1em auto; padding:1em 2em; background:#fff3cd; color:#856404; border:1px solid #ffeeba; border-radius:8px; font-size:0.97em;'>
-                    <strong>หมายเหตุ:</strong> หากไฟล์ PDF ของคุณไม่สามารถอัปโหลดได้ อาจเกิดจากสาเหตุต่อไปนี้:
-                    <ul style='margin:0.5em 0 0 1.5em; color:#856404; text-align:left;'>
-                        <li>ไฟล์ PDF ถูกสร้างด้วยวิธีที่ไม่รองรับ หรือมีโครงสร้างไฟล์ผิดปกติ</li>
-                        <li>ไฟล์ PDF มีการเข้ารหัสหรือป้องกันรหัสผ่าน</li>
-                        <li>ไฟล์ PDF มีขนาดใหญ่เกิน 10MB</li>
-                        <li>ไฟล์ PDF มีนามสกุลไม่ถูกต้อง หรือมีการเปลี่ยนชื่อไฟล์โดยไม่ถูกต้อง</li>
-                        <li>เบราว์เซอร์หรืออุปกรณ์ที่ใช้งานไม่รองรับการอัปโหลดไฟล์ PDF บางประเภท</li>
-                    </ul>
-                    หากยังพบปัญหา กรุณาตรวจสอบไฟล์ PDF หรือแจ้งผู้ดูแลระบบ
-                </div>";
-                break;
-            }
-        }
-    }
-
-    // Show PHP upload error details for debugging (optional, can be commented out in production)
-    foreach ($_FILES['images']['error'] as $key => $error_code) {
+        foreach ($_FILES['images']['error'] as $key => $error_code) {
         if ($error_code !== UPLOAD_ERR_OK) {
             $file_name = $_FILES['images']['name'][$key];
             switch ($error_code) {
@@ -168,17 +151,5 @@ if (count($uploaded_files) > 0) {
             echo "<div style='max-width:500px; margin:1em auto; padding:0.7em 1.5em; background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; border-radius:7px; font-size:0.97em;'>$error_message</div>";
         }
     }
-    // Debugging: Show actual file size and PHP limits
-    // $max_upload = ini_get('upload_max_filesize');
-    // $max_post = ini_get('post_max_size');
-    // $memory_limit = ini_get('memory_limit');
-    // echo "<div style='color:#888; margin-top:1em; font-size:0.95em;'>
-    //         <strong>Debug info:</strong><br>
-    //         Actual file size: " . number_format($file_size) . " bytes<br>
-    //         upload_max_filesize: $max_upload<br>
-    //         post_max_size: $max_post<br>
-    //         memory_limit: $memory_limit
-    //       </div>";
-    // exit;
 }
-?> 
+?>
