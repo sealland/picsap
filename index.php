@@ -329,12 +329,11 @@
                                 ';
                             }
                             // ปุ่มลบ (เหมือนเดิม)
-                                if ($showDeleteBtn) {echo '
+                                if ($showDeleteBtn) {
+                                    echo '
                                         <form action="delete_image.php" method="POST" style="margin-top:8px;">
                                             <input type="hidden" name="material_id" value="'.htmlspecialchars($id).'">
                                             <input type="hidden" name="filename" value="'.htmlspecialchars($filename).'">
-                                            <!-- แก้ไขบรรทัดนี้ ให้มี value ที่ไม่ว่างเปล่า -->
-                                            <input type="hidden" name="draft" value="true">
                                             <button type="button" class="btn btn-danger btn-sm btn-delete-image">
                                                 <i class="fas fa-trash-alt"></i> ลบรูป
                                             </button>
@@ -349,28 +348,26 @@
             </div>
 
             <!-- Upload Section -->
-           <div class="upload-section">
-            <h3 class="mb-4"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Images</h3>
-            <form action="upload_handler.php" method="post" enctype="multipart/form-data" id="uploadForm">
-                <input type="hidden" name="material_id" value="<?php echo htmlspecialchars($id); ?>">
-                <!-- เพิ่มบรรทัดนี้เข้ามา -->
-                <input type="hidden" name="draft" value="true">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="mb-3">
-                            <label for="images" class="form-label">Select Images</label>
-                            <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*,application/pdf" required>
-                            <div class="form-text">คุณสามารถเลือกอัพโหลดได้ครั้งละหลายไฟล์แต่ต้องไม่เกิน 10MB/File. Supported formats: JPG, PNG, GIF, PDF</div>
+            <div class="upload-section">
+                <h3 class="mb-4"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Images</h3>
+                <form action="upload_handler.php" method="post" enctype="multipart/form-data" id="uploadForm">
+                    <input type="hidden" name="material_id" value="<?php echo htmlspecialchars($id); ?>">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="images" class="form-label">Select Images</label>
+                                <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*" required>
+                                <div class="form-text">คุณสามารถเลือกอัพโหลดได้ครั้งละหลายไฟล์แต่ต้องไม่เกิน 10MB/File. Supported formats: JPG, PNG, GIF ,PDF</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end">
+                            <button type="submit" class="btn btn-upload w-100">
+                                <i class="fas fa-upload me-2"></i>Upload File
+                            </button>
                         </div>
                     </div>
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button type="submit" class="btn btn-upload w-100">
-                            <i class="fas fa-upload me-2"></i>Upload File
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
 
             <!-- Material Information -->
             <div class="info-table">
@@ -402,7 +399,42 @@
             </div>
 
             <!-- Search Section -->
-            <!-- (Removed duplicate MySQLi search/results section. Use only the top search form and SQLSRV logic.) -->
+            <div class="search-section mb-4">
+                <form method="GET" action="index.php" class="d-flex">
+                    <input type="text" name="search" placeholder="ค้นหา material" class="form-control me-2" aria-label="Search">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> ค้นหา
+                    </button>
+                </form>
+            </div>
+
+            <!-- Search Results -->
+            <div class="search-results">
+                <?php
+                // เช็คว่ามีการค้นหาหรือไม่
+                $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+                // ตัวอย่างการดึงข้อมูล material จากฐานข้อมูล
+                // สมมติใช้ MySQL และมีตารางชื่อ material
+                $conn = new mysqli('localhost', 'username', 'password', 'database');
+                $sql = "SELECT * FROM material";
+                if ($search != '') {
+                    $sql .= " WHERE name LIKE '%" . $conn->real_escape_string($search) . "%'";
+                }
+                $result = $conn->query($sql);
+
+                if ($result->num_rows > 0) {
+                    echo "<ul class='list-group'>";
+                    while($row = $result->fetch_assoc()) {
+                        echo "<li class='list-group-item'>" . htmlspecialchars($row['name']) . "</li>";
+                    }
+                    echo "</ul>";
+                } else {
+                    echo "<div class='alert alert-warning' role='alert'>ไม่พบ material</div>";
+                }
+                $conn->close();
+                ?>
+            </div>
 
             <!-- Footer -->
             <div class="text-center mt-4">
@@ -485,5 +517,44 @@
     }
     ?>
 
+    <?php
+    include 'conn.php';
+
+    // รับ parameter id หรือ search
+    $id = isset($_GET['id']) ? $_GET['id'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    // สร้าง query สำหรับค้นหา
+    $sql = "SELECT * FROM material";
+    $params = array();
+
+    if ($id != '') {
+        $sql .= " WHERE id = ?";
+        $params[] = $id;
+    } elseif ($search != '') {
+        $sql .= " WHERE name LIKE ?";
+        $params[] = '%' . $search . '%';
+    }
+
+    $stmt = sqlsrv_query($conn, $sql, $params);
+
+    if ($stmt === false) {
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    echo '<form method="GET" action="index.php">
+            <input type="text" name="search" placeholder="ค้นหา material" value="' . htmlspecialchars($search) . '">
+            <button type="submit">ค้นหา</button>
+          </form>';
+
+    echo "<ul>";
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        echo "<li>" . htmlspecialchars($row['name']) . "</li>";
+    }
+    echo "</ul>";
+
+    sqlsrv_free_stmt($stmt);
+    sqlsrv_close($conn);
+    ?>
 </body>
 </html>
